@@ -1,3 +1,4 @@
 flask==1.1.2
+Jinja2==3.1.2
 google-cloud-error-reporting==1.1.1
 click>=7.0,<8.0
