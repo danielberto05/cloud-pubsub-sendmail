@@ -39,6 +39,7 @@
 def pubsub_sendmail(event, context):
     import base64
     import os
+    import json
     import smtplib
     from email.message import EmailMessage
 
@@ -50,7 +51,8 @@ def pubsub_sendmail(event, context):
     # Remove leading and trailing spaces.
 
     mailFrom      = os.environ.get('MAIL_FROM', '').strip()
-    mailTo        = os.environ.get('MAIL_TO', '').strip()
+    mailPassword  = os.environ.get('MAIL_PASSWORD', '').strip()
+    # mailTo        = os.environ.get('MAIL_TO', '').strip()
     mailSubject   = os.environ.get('MAIL_SUBJECT', '').strip()
     mailServer    = os.environ.get('MAIL_SERVER', '').strip()
     mailLocalHost = os.environ.get('MAIL_LOCAL_HOST', '').strip()
@@ -59,10 +61,13 @@ def pubsub_sendmail(event, context):
 
     # Fetch the pub/sub message and set to '' if not present.
 
-    if 'data' in event:
-        mailMessageBody = base64.b64decode(event['data']).decode('utf-8')
-    else:
-        mailMessageBody = ''
+    # if 'data' in event:
+    requestData = json.loads(base64.b64decode(event['data']).decode('utf-8'))
+    mailTo = requestData["email"]
+    mailMessageBody = requestData["message"]
+    
+    # else:
+    #     mailMessageBody = ''
 
     debugFlag = mailDebug == "TRUE"
     forceTlsFlag = mailForceTls == "TRUE"
@@ -89,10 +94,9 @@ def pubsub_sendmail(event, context):
     # You may need to customize this flow to support your mail relay configuration.
     # Examples may include authentication, encryption, etc.
 
-    if forceTlsFlag:
-        smtpServer = smtplib.SMTP_SSL(host=mailServer, local_hostname=mailLocalHost)
-    else:
-        smtpServer = smtplib.SMTP(host=mailServer, local_hostname=mailLocalHost)
+    smtpServer = smtplib.SMTP_SSL(host=mailServer, port=465)
+
+    smtpServer.login(mailFrom, mailPassword)
 
     if debugFlag:
         smtpServer.set_debuglevel(2)
