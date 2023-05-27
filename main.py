@@ -36,7 +36,7 @@
 # (2) If you want your mail to come from a static IP address use a
 #     VPC connector with a static NAT.
 
-def pubsub_sendmail(event, context):
+def notify_client(event, context):
     import base64
     import os
     import json
