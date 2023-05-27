@@ -1,0 +1,12 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - notify-client-function
+  - --region=us-east1
+  - --source=.
+  - --trigger-topic=${_TOPIC_NAME}
+  - --service-account=${_FUNCTION_SA}
+  - --runtime=python38

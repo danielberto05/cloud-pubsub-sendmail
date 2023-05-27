@@ -1,0 +1,6 @@
+__pycache__
+venv
+/credentials
+.git
+README.md
+deploy-pubsub-sendmail.sh
